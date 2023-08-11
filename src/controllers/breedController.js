@@ -14,3 +14,18 @@ export async function getBreeds(req, res) {
     }
 
 }
+
+export async function getBreedCategories(req, res) {
+
+    try {
+
+        const categoryResponse = await db.query(`SELECT breed_category_name FROM "breed_category"`);
+        res.send(categoryResponse.rows.map(e => e.breed_category_name));
+
+    } catch (err) {
+
+        res.status(500).send(err.message);
+
+    }
+
+}
