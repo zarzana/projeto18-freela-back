@@ -2,7 +2,8 @@ import bcrypt from 'bcrypt';
 import { getUsersWithEmailRepository, insertSessionRepository } from '../../repository/authRepository.js';
 import { v4 as uuid } from 'uuid';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
+import { createAccessToken, createRefreshToken } from '../../utils/jwtUtils.js';
+import { setAccessTokenCookie, setRefreshTokenCookie } from '../../utils/cookieUtils.js';
 
 dotenv.config();
 
@@ -22,21 +23,20 @@ export async function login(req, res) {
         // create session in db
         const refresh_uuid = uuid();
         const session_id_response = await insertSessionRepository(user.user_id, refresh_uuid);
-        const session_id = Object.values(session_id_response.rows[0])[0];
+        const session_id = Object.values(session_id_response.rows[0])[0];  // in case it's needed in the future
 
         // create token pair
-        const accessToken = jwt.sign({ user_id: user.user_id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-        const refreshToken = jwt.sign({ refresh_uuid: refresh_uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
+        const accessToken = createAccessToken(user.user_id);
+        const refreshToken = createRefreshToken(refresh_uuid);
 
         // send cookies!
-        res
-            .cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true })  // 1 hour
-            .cookie('refreshToken', refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })  // 30 days
-            .sendStatus(200);
+        setAccessTokenCookie(res, accessToken);
+        setRefreshTokenCookie(res, refreshToken);
+        res.sendStatus(200);
 
-    } catch (err) {
+    } catch (error) {
 
-        res.status(500).send(err.message);
+        res.status(500).send(error.message);
 
     }
 
