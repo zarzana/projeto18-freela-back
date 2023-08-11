@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { getUsersWithEmailRepository, insertSessionRepository, insertTokenRepository } from '../../repository/authRepository.js';
+import { getUsersWithEmailRepository, insertSessionRepository } from '../../repository/authRepository.js';
 import { v4 as uuid } from 'uuid';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
@@ -19,25 +19,19 @@ export async function login(req, res) {
             return res.sendStatus(401);
         };
 
-        // create access token
-        const accessToken = jwt.sign({ user_id: user.user_id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
-
-        // create refresh token
-        const token_id = uuid();
-        const refreshToken = jwt.sign({ token_id: token_id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '60d' });
-
         // create session in db
-        let session_id = await insertSessionRepository(user.user_id);
-        session_id = Object.values(session_id.rows[0])[0];
-        console.log(session_id)
+        const refresh_uuid = uuid();
+        const session_id_response = await insertSessionRepository(user.user_id, refresh_uuid);
+        const session_id = Object.values(session_id_response.rows[0])[0];
 
-        // create token in db
-        await insertTokenRepository(token_id, session_id);
+        // create token pair
+        const accessToken = jwt.sign({ user_id: user.user_id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ refresh_uuid: refresh_uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
 
         // send cookies!
         res
-            .cookie('accessToken', accessToken, { maxAge: 30 * 60 * 1000, httpOnly: true })  // 30 minutes
-            .cookie('refreshToken', refreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true })  // 60 days
+            .cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true })  // 1 hour
+            .cookie('refreshToken', refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })  // 30 days
             .sendStatus(200);
 
     } catch (err) {
