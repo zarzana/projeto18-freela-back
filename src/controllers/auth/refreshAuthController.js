@@ -36,20 +36,4 @@ export async function refreshSession(req, res) {
 
     }
 
-    try {
-
-        // look for token in db that matches token_id and set valid to false
-        // generate new uuid and create new token in db  -> refresh token rotation
-        // set session last_update to now
-
-        // if cookie expired: send error and make sure it's set to false in db
-        // if requested token is set to invalid in db: invalidate current any current token of current session and close session
-        // -> automatic reuse detection
-
-    } catch (err) {
-
-        res.status(500).send(err.message);
-
-    }
-
 }
