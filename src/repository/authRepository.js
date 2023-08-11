@@ -18,7 +18,15 @@ export async function updateSessionRepository(token_uuid, new_token_uuid) {
 		UPDATE "session"
 		SET "refresh_uuid" = '${new_token_uuid}',
 			"last_refresh" = '${dayjs().format('YYYY-MM-DD HH:mm:ssZ')}'
-		WHERE "refresh_uuid" = '${token_uuid}'
+		WHERE "refresh_uuid" = '${token_uuid}' AND "active" = TRUE
 		RETURNING "user_id"
+	`)
+}
+
+export async function closeSessionRepository(token_uuid) {
+	return db.query(`
+		UPDATE "session"
+		SET "active" = FALSE
+		WHERE "refresh_uuid" = '${token_uuid}'
 	`)
 }
