@@ -8,13 +8,10 @@ import { setAccessTokenCookie, setRefreshTokenCookie } from '../../utils/cookieU
 dotenv.config();
 
 export async function refreshSession(req, res) {
-
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) { return res.sendStatus(401) };
-
+    
     try {
 
-        const token_uuid = verifyRefreshToken(refreshToken).refresh_uuid;
+        const token_uuid = verifyRefreshToken(req.cookies.refreshToken).refresh_uuid;
         const new_token_uuid = uuid();
         const dbResponse = await updateSessionRepository(token_uuid, new_token_uuid);
         if (dbResponse.rows.length === 0) { return res.sendStatus(401) };  // this is where automatic reuse detection would be
