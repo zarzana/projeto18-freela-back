@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { getUsersWithEmailRepository, insertSessionRepository } from '../../repository/authRepository.js';
 import { v4 as uuid } from 'uuid';
 import dotenv from 'dotenv';
-import { createAccessToken, createRefreshToken } from '../../utils/jwtUtils.js';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -25,8 +25,8 @@ export async function login(req, res) {
         const session_id = Object.values(session_id_response.rows[0])[0];  // in case it's needed in the future
 
         // create token pair
-        const accessToken = createAccessToken(user.user_id);
-        const refreshToken = createRefreshToken(refresh_uuid);
+        const accessToken = jwt.sign({ user_id: user.user_id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ refresh_uuid: refresh_uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
 
         // send cookies!
         res
