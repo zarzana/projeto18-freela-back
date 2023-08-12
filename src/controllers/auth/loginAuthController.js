@@ -3,7 +3,6 @@ import { getUsersWithEmailRepository, insertSessionRepository } from '../../repo
 import { v4 as uuid } from 'uuid';
 import dotenv from 'dotenv';
 import { createAccessToken, createRefreshToken } from '../../utils/jwtUtils.js';
-import { setAccessTokenCookie, setRefreshTokenCookie } from '../../utils/cookieUtils.js';
 
 dotenv.config();
 
@@ -30,9 +29,10 @@ export async function login(req, res) {
         const refreshToken = createRefreshToken(refresh_uuid);
 
         // send cookies!
-        setAccessTokenCookie(res, accessToken);
-        setRefreshTokenCookie(res, refreshToken);
-        res.sendStatus(200);
+        res
+            .cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true })  // 1 hour
+            .cookie('refreshToken', refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, path: '/auth' })  // 30 days
+            .sendStatus(200);
 
     } catch (error) {
 
