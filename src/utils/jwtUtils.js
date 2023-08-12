@@ -10,7 +10,3 @@ export function createAccessToken(user_id, expiration = '1h') {
 export function createRefreshToken(refresh_uuid, expiration = '30d') {
     return jwt.sign({ refresh_uuid: refresh_uuid }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: expiration });
 }
-
-export function verifyRefreshToken(refreshToken) {
-    return jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-}
