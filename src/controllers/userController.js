@@ -16,21 +16,6 @@ export async function getUserById(req, res) {
             WHERE user_id = ${userId} AND available IS NOT FALSE;
         `);
 
-        // let userInformation = dbReponse.rows.map(e => ({
-        //     ...e,
-        //     cats: {
-        //         cat_id: e.cat_id,
-        //         cat_name: e.cat_name,
-        //         breed_name: e.breed_name,
-        //         male: e.male,
-        //         birthday: e.birthday,
-        //         description: e.description,
-        //     }
-        // }));
-        // userInformation = userInformation.map(({
-        //     cat_id, cat_name, breed_name, male, birthday, description, ...keepAttrs
-        // }) => keepAttrs);
-
         let catArray = dbReponse.rows.map(({
             name, icon, email, phone, profile, ...keepAttrs
             }) => keepAttrs);
