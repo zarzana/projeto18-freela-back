@@ -31,3 +31,24 @@ export async function validateRefreshToken(req, res, next) {
     return jwt.verify(res.locals.refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
 }
+
+export function verifyAcessToken(req, res, next) {
+
+    try {
+
+        const userId = jwt.verify(res.locals.accessToken, process.env.ACCESS_TOKEN_SECRET).user_id;
+        res.locals.userId = userId;
+
+        next();
+
+    } catch (error) {
+
+        if (error.message === 'invalid signature') { return res.sendStatus(401) };
+        if (error.message === 'jwt expired') { return res.sendStatus(401) };
+        if (error.message === 'invalid token') { return res.sendStatus(400) };
+
+        res.status(500).send(error.message);
+
+    }
+
+}

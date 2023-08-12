@@ -1,6 +1,5 @@
 export function readRefreshToken(req, res, next) {
 
-    res.locals.accessToken = req.cookies.accessToken;
     res.locals.refreshToken = req.cookies.refreshToken;
 
     if (!res.locals.refreshToken) { return res.sendStatus(400) };  // raises error if there is NO refresh token
@@ -25,5 +24,15 @@ export function clearCookies(req, res, next) {
         .clearCookie('refreshToken', { path: '/auth' });
 
     next()
+
+}
+
+export function readAccessToken(req, res, next) {
+
+    res.locals.accessToken = req.cookies.accessToken;
+
+    if (!res.locals.accessToken) { return res.sendStatus(401) };
+
+    next();
 
 }
