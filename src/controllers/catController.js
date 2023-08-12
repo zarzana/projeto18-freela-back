@@ -55,7 +55,7 @@ export async function getCatById(req, res) {
     try {
 
         const dbReponse = await db.query(`
-            SELECT cat_name, breed_name, male, birthday, description, "user".user_id, name, icon, phone, cpf, profile
+            SELECT cat_name, breed_name, male, birthday, description, "user".user_id, name, icon, phone, email, profile
             FROM "cat"
             JOIN "breed"
                 ON "cat".breed_id = "breed".breed_id
