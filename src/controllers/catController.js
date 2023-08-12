@@ -47,3 +47,28 @@ export async function getCat(req, res) {
     }
 
 }
+
+export async function getCatById(req, res) {
+
+    const catId = req.params.id;
+
+    try {
+
+        const dbReponse = await db.query(`
+            SELECT cat_name, breed_name, male, birthday, description, "user".user_id, name, icon, phone, cpf, profile
+            FROM "cat"
+            JOIN "breed"
+                ON "cat".breed_id = "breed".breed_id
+            JOIN "user"
+                ON "cat".user_id = "user".user_id
+            WHERE "cat_id" = ${catId} AND available = TRUE
+        `);
+        res.status(200).send(dbReponse.rows[0]);
+
+    } catch (error) {
+
+        res.status(500).send(error.message);
+
+    }
+
+}
