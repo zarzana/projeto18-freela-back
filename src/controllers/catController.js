@@ -5,13 +5,45 @@ export async function postCat(req, res) {
     const { cat_name, available, breed_id, male, birthday, description } = req.body;
     const userId = res.locals.userId;
 
-    await db.query(`
-    INSERT
-        INTO "cat" ("user_id", "cat_name", "available", "breed_id", "male", "birthday", "description")
-    VALUES
-        ('${userId}', '${cat_name}', '${available}', '${breed_id}', '${male}', '${birthday}', '${description}')`
-    );
+    try {
 
-    res.sendStatus(201);
+        await db.query(`
+        INSERT
+            INTO "cat" ("user_id", "cat_name", "available", "breed_id", "male", "birthday", "description")
+        VALUES
+            ('${userId}', '${cat_name}', '${available}', '${breed_id}',
+            ${male != null ? male : 'NULL'},
+            ${birthday != null ? "'" + birthday + "'" : 'NULL'},
+            ${description != null ? "'" + description + "'" : 'NULL'})`
+        );
+
+        res.sendStatus(201);
+
+    } catch (err) {
+
+        res.status(500).send(err.message);
+
+    }
+
+}
+
+export async function getCat(req, res) {
+
+    try {
+
+        const dbReponse = await db.query(`
+            SELECT cat_id, cat_name, breed_name, male, birthday, description
+            FROM "cat"
+            JOIN "breed"
+                ON "cat".breed_id = "breed".breed_id
+            WHERE available = TRUE
+        `);
+        res.status(200).send(dbReponse.rows);
+
+    } catch (error) {
+
+        res.status(500).send(error.message);
+
+    }
 
 }
