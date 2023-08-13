@@ -6,8 +6,8 @@ import { getCat, getCatById, postCat } from '../controllers/catController.js';
 
 const router = Router();
 
-router.post('/cat', readAccessToken, verifyAcessToken, postCatValidator, postCat);
-router.get('/cat', getCat);
-router.get('/cat/:id', readAccessToken, verifyAcessToken, getCatById);
+router.post('/api/cat', readAccessToken, verifyAcessToken, postCatValidator, postCat);
+router.get('/api/cat', getCat);
+router.get('/api/cat/:id', readAccessToken, verifyAcessToken, getCatById);
 
 export default router;

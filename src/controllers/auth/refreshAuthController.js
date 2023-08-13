@@ -20,7 +20,7 @@ export async function refreshSession(req, res) {
         // send cookies!
         res
             .cookie('accessToken', accessToken, { maxAge: 60 * 60 * 1000, httpOnly: true })  // 1 hour
-            .cookie('refreshToken', newRefreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, path: '/auth' })  // 30 days
+            .cookie('refreshToken', newRefreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, path: '/api/auth' })  // 30 days
             .sendStatus(200);
 
     } catch (error) {

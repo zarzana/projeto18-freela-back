@@ -5,6 +5,6 @@ import { getUserById } from '../controllers/userController.js';
 
 const router = Router();
 
-router.get('/user/:id', readAccessToken, verifyAcessToken, getUserById);
+router.get('/api/user/:id', readAccessToken, verifyAcessToken, getUserById);
 
 export default router;

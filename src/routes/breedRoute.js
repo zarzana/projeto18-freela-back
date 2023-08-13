@@ -3,7 +3,7 @@ import { getBreedCategories, getBreeds } from '../controllers/breedController.js
 
 const router = Router();
 
-router.get('/breed', getBreeds);
-router.get('/breed/category', getBreedCategories);
+router.get('/api/breed', getBreeds);
+router.get('/api/breed/category', getBreedCategories);
 
 export default router;
