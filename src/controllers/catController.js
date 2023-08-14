@@ -2,19 +2,20 @@ import { db } from "../database/database.js";
 
 export async function postCat(req, res) {
 
-    const { cat_name, available, breed_id, male, birthday, description } = req.body;
+    const { cat_name, available, breed_id, male, birthday, description, image_url } = req.body;
     const userId = res.locals.userId;
 
     try {
 
         await db.query(`
         INSERT
-            INTO "cat" ("user_id", "cat_name", "available", "breed_id", "male", "birthday", "description")
+            INTO "cat" ("user_id", "cat_name", "available", "breed_id", "male", "birthday", "description", "image_url")
         VALUES
             ('${userId}', '${cat_name}', '${available}', '${breed_id}',
             ${male != null ? male : 'NULL'},
             ${birthday != null ? "'" + birthday + "'" : 'NULL'},
-            ${description != null ? "'" + description + "'" : 'NULL'})`
+            ${description != null ? "'" + description + "'" : 'NULL'},
+            ${image_url != null ? "'" + image_url + "'" : 'NULL'});`
         );
 
         res.sendStatus(201);
@@ -32,7 +33,7 @@ export async function getCat(req, res) {
     try {
 
         const dbReponse = await db.query(`
-            SELECT cat_id, cat_name, breed_name, male, birthday, description
+            SELECT cat_id, cat_name, breed_name, male, birthday, description, image_url
             FROM "cat"
             JOIN "breed"
                 ON "cat".breed_id = "breed".breed_id

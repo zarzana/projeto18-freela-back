@@ -42,7 +42,7 @@ export async function getUserCats(req, res) {
     try {
 
         const dbReponse = await db.query(`
-            SELECT cat_id, cat_name, available, breed_name, male, birthday, description
+            SELECT cat_id, cat_name, available, breed_name, male, birthday, description, image_url
             FROM "user"
             LEFT JOIN "cat"
                 USING (user_id)

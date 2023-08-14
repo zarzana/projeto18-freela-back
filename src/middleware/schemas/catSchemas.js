@@ -7,4 +7,5 @@ export const postCatSchema = joi.object({
     male: joi.boolean().required().allow(null),
     birthday: joi.date().required().allow(null),
     description: joi.string().required().allow(null).allow(''),
+    image_url: joi.string().required(),
 });
