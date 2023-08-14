@@ -72,3 +72,24 @@ export async function getCatById(req, res) {
     }
 
 }
+
+export async function patchCatAvailability(req, res) {
+
+    const catId = req.params.id;
+
+    try {
+
+        await db.query(`
+            UPDATE "cat"
+            SET available = NOT available
+            WHERE "cat_id" = ${catId}
+        `);
+        res.sendStatus(200);
+
+    } catch (error) {
+
+        res.status(500).send(error.message);
+
+    }
+
+}
