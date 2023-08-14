@@ -51,7 +51,10 @@ export async function getUserCats(req, res) {
             WHERE user_id = ${userId};
         `);
 
-        res.status(200).send(dbReponse.rows);
+        let catArray = dbReponse.rows;
+        if (catArray[0].cat_id === null) { catArray = [] };
+
+        res.status(200).send(catArray);
 
     } catch (error) {
 

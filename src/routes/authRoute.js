@@ -9,8 +9,8 @@ import { validateRefreshToken } from '../middleware/jwtMiddleware.js';
 
 const router = Router();
 
-router.post('/api/auth/signup', refreshTokenAbsent, signupValidator, signup);
-router.post('/api/auth/login', refreshTokenAbsent, loginValidator, login);
+router.post('/api/auth/signup', signupValidator, signup);
+router.post('/api/auth/login', loginValidator, login);
 router.post('/api/auth/token', readRefreshToken, validateRefreshToken, refreshSession);
 router.post('/api/auth/logout', readRefreshToken, clearCookies, validateRefreshToken, logout);
 
