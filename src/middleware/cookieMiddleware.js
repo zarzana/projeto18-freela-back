@@ -21,7 +21,7 @@ export function clearCookies(req, res, next) {
 
     res
         .clearCookie('accessToken', { path: '/' })
-        .clearCookie('refreshToken', { path: '/auth' });
+        .clearCookie('refreshToken', { path: '/api/auth' });
 
     next()
 
